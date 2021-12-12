@@ -7,27 +7,32 @@ node {
         }
         stage('Build') {
             dotnet_build();
+            
         }
-        stage('Docker') {
-              bat(script: 'docker login --username %UsernameDockerHub% --password %PasswordDocker%', returnStdout: true);
-              bat(script: 'docker build -t antony0618/servicenet5 .', returnStdout: true);
-              bat(script: 'docker push antony0618/servicenet5', returnStdout: true);            
+        stage('Docker Build') {
+              bat(script: 'docker login -u rtorresgonzales -p Ratg$151992', returnStdout: true);
+              bat(script: 'docker build -t rtorresgonzales/servicenet5 .', returnStdout: true);
+              bat(script: 'docker push rtorresgonzales/servicenet5', returnStdout: true);
         }
-        stage('Deploy Dev') {
-              bat(script: 'az login --service-principal --username 60445a5a-4c7d-404e-96a0-0d5c83c4978f --password wP_yGAcZKPUZQBTd.ezSLAzpNAzY-ZcZ6l --tenant 74343d69-5375-4c7a-8cc9-08986488c964', returnStdout: true);
-              bat(script: 'az account set --subscription "StywarV"', returnStdout: true);
-              bat(script: 'az container restart --name micro5testservice --resource-group aforo255Devops', returnStdout: true);       
+        stage('Deploy Dev') {             
+              bat(script: 'az login --service-principal --username b1277da0-9b01-4377-8ac0-cbe32560a0a9 --password yrNooQdJyIJEGfq5SRdR-H-W_s.T7p0.cb --tenant 230b6181-552d-49d1-a6a2-17dda4c4058e', returnStdout: true);
+              //script: 'az account set --subscription "StywarV"', returnStdout: true);
+              bat(script: 'az container restart --name microtestservice --resource-group JenkinsDEVOPS', returnStdout: true);
         }
         stage('Deploy Prod') {
+             echo 'Hello World'
+             /*
              bat(script: 'az aks get-credentials --resource-group  aforo255Devops  --name cluster-Devops & kubectl config get-contexts --kubeconfig=%KUBE_PATH_CONFIG%', returnStdout: true);
              bat(script: 'kubectl config use-context cluster-Devops --kubeconfig=%KUBE_PATH_CONFIG%', returnStdout: true);
              bat(script: 'Kubectl delete --all pods --kubeconfig=%KUBE_PATH_CONFIG% & kubectl apply -f k8s.yml --kubeconfig=%KUBE_PATH_CONFIG%', returnStdout: true);
+             */
         }        
     }
 }
 
 def dotnet_build() {
+    bat(script: 'dir', returnStdout: true);
     bat(script: 'dotnet restore', returnStdout: true);
     bat(script: 'dotnet build', returnStdout: true);
-    bat(script: 'dotnet test', returnStdout: true);
+    bat(script: 'dotnet test', returnStdout: true);    
 }
